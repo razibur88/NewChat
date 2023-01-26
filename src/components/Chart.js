@@ -18,6 +18,7 @@ import EmojiPicker from "emoji-picker-react";
 
 const Chart = () => {
   let [msg, setMsg] = useState("");
+  let [msgerr, setMsgerr] = useState("");
   let [msglist, setMsglist] = useState([]);
   let [audioUrl, setAudioUrl] = useState("");
   let [blob, setBlob] = useState("");
@@ -29,25 +30,30 @@ const Chart = () => {
 
   let setMsgMain = (e) => {
     setMsg(e.target.value);
+    setMsgerr("");
   };
 
   let handleMsgSend = () => {
-    if (activechatname.active.status == "single") {
-      set(push(ref(db, "singlemsg/")), {
-        whosenderid: data.uid,
-        whoserndername: data.displayName,
-        whoreceiverid: activechatname.active.id,
-        whoreceivername: activechatname.active.name,
-        msg: msg,
-        date: `${new Date().getFullYear()}-${
-          new Date().getMonth() + 1
-        }- ${new Date().getDate()} ${new Date().getHours()}: ${new Date().getMinutes()} `,
-      }).then(() => {
-        setMsg("");
-        setEmojishow(false);
-      });
+    if (msg) {
+      if (activechatname.active.status == "single") {
+        set(push(ref(db, "singlemsg/")), {
+          whosenderid: data.uid,
+          whoserndername: data.displayName,
+          whoreceiverid: activechatname.active.id,
+          whoreceivername: activechatname.active.name,
+          msg: msg,
+          date: `${new Date().getFullYear()}-${
+            new Date().getMonth() + 1
+          }- ${new Date().getDate()} ${new Date().getHours()}: ${new Date().getMinutes()} `,
+        }).then(() => {
+          setMsg("");
+          setEmojishow(false);
+        });
+      } else {
+        console.log("ami group");
+      }
     } else {
-      console.log("ami group");
+      setMsgerr("Please Some Text");
     }
   };
 
@@ -293,7 +299,9 @@ const Chart = () => {
           className="w-[85%] border-2 py-3 px-3"
           value={msg}
         />
-
+        <div className="absolute bottom-[-22px] text-[red]">
+          <p>{msgerr}</p>
+        </div>
         <label>
           <input type="file" className="hidden" onChange={handleMsgImage} />
           <GrGallery className="absolute top-[15px] right-[160px]" />

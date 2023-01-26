@@ -8,20 +8,34 @@ const FriendGropu = () => {
   let [group, setGroup] = useState("");
   let [grouplist, setGrouplist] = useState([]);
   let [tagline, setTagline] = useState("");
+  let [grouperr, setGrouperr] = useState("");
   const data = useSelector((state) => state.userLoginInfo.userInfo);
+
   let handleGrouprequest = () => {
     setShow(!show);
   };
 
+  let handleGroup = (e) => {
+    setGroup(e.target.value);
+    setGrouperr("");
+  };
+  let handleTagline = (e) => {
+    setTagline(e.target.value);
+    setGrouperr("");
+  };
   let handlegroupRequest = () => {
-    set(push(ref(db, "group")), {
-      group: group,
-      grouptagline: tagline,
-      adminmame: data.displayName,
-      adminid: data.uid,
-    }).then(() => {
-      setShow(false);
-    });
+    if ((group, tagline)) {
+      set(push(ref(db, "group")), {
+        group: group,
+        grouptagline: tagline,
+        adminmame: data.displayName,
+        adminid: data.uid,
+      }).then(() => {
+        setShow(false);
+      });
+    } else {
+      setGrouperr("Please Create Group");
+    }
   };
 
   useEffect(() => {
@@ -68,16 +82,17 @@ const FriendGropu = () => {
           </button>
         )}
       </div>
+      <p className="text-[red] pl-5">{grouperr}</p>
       <div className="h-[290px] overflow-scroll">
         {show ? (
           <div className="ml-[10%]">
             <input
-              onChange={(e) => setGroup(e.target.value)}
+              onChange={handleGroup}
               placeholder="Group Name"
               className="border border-secondary w-[90%] py-2 px-2 rounded-xl mt-7"
             />
             <input
-              onChange={(e) => setTagline(e.target.value)}
+              onChange={handleTagline}
               placeholder="Tagline"
               className="border border-secondary w-[90%] py-2 px-2 rounded-xl mt-3 mb-3"
             />
